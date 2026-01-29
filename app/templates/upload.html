@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Transcript - CorpMeet-AI{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center animate-fade-in">
+    <div class="col-lg-8">
+        <div class="glass-card p-5">
+            <div class="text-center mb-5">
+                <div class="mb-3">
+                    <i class="bi bi-cloud-arrow-up display-3 text-primary"></i>
+                </div>
+                <h2 class="fw-bold mb-3">Upload Meeting Transcript</h2>
+                <p class="text-muted">Transform your meetings into actionable insights</p>
+            </div>
+
+            <form action="{{ url_for('main.process_transcript') }}" method="post" enctype="multipart/form-data" id="transcriptForm">
+                
+                <div class="mb-4">
+                    <label for="meeting_title" class="form-label text-uppercase small text-muted fw-bold">
+                        <i class="bi bi-tag me-1"></i>Meeting Title
+                    </label>
+                    <input type="text" 
+                           class="form-control py-3" 
+                           id="meeting_title" 
+                           name="meeting_title" 
+                           placeholder="e.g., Q3 Strategy Review" 
+                           required>
+                </div>
+
+                <!-- Tabs for input method -->
+                <ul class="nav nav-pills mb-4 nav-justified bg-dark rounded p-1" id="uploadTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active rounded fw-medium" id="paste-tab" data-bs-toggle="pill" data-bs-target="#paste" type="button" role="tab">
+                            <i class="bi bi-file-text me-2"></i>Paste Text
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded fw-medium" id="file-tab" data-bs-toggle="pill" data-bs-target="#file" type="button" role="tab">
+                            <i class="bi bi-cloud-arrow-up me-2"></i>Upload File
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content mb-4" id="uploadTabContent">
+                    <!-- Paste Text Tab -->
+                    <div class="tab-pane fade show active" id="paste" role="tabpanel">
+                        <textarea class="form-control" 
+                                  id="transcript_text" 
+                                  name="transcript_text" 
+                                  rows="12" 
+                                  placeholder="Paste your meeting transcript here...
+
+Example format:
+Sarah: Let's discuss the Q3 marketing budget.
+John: I propose we increase digital spend by 20%.
+Sarah: Agreed. Action item: John to prepare budget proposal by Friday.
+Mike: We also need to finalize the vendor contract.
+Sarah: Decision: We'll go with Vendor A based on pricing."></textarea>
+                    </div>
+
+                    <!-- Upload File Tab -->
+                    <div class="tab-pane fade" id="file" role="tabpanel">
+                        <div class="upload-zone" id="uploadZone">
+                            <i class="bi bi-cloud-upload display-4 text-primary mb-3"></i>
+                            <h5 class="mb-2">Drag & Drop your file here</h5>
+                            <p class="text-muted small mb-3">or click to browse</p>
+                            <p class="text-muted small mb-0">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Supported: <strong>.txt</strong> and <strong>.docx</strong> (max 16MB)
+                            </p>
+                            <input class="d-none" type="file" id="transcript_file" name="transcript_file" accept=".txt,.docx">
+                        </div>
+                        <div id="file-name-display"></div>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary-glow btn-lg py-3 fw-bold" id="processBtn">
+                        <i class="bi bi-stars me-2"></i>Generate AI Minutes
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="glass-card p-4 mt-4 animate-fade-in delay-200">
+            <h5 class="mb-3"><i class="bi bi-lightbulb text-warning me-2"></i>Tips for Best Results</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="list-unstyled small text-muted">
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Include speaker names</li>
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Mention action items clearly</li>
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Note decisions made</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-unstyled small text-muted">
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Include deadlines</li>
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Add context when possible</li>
+                        <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Use clear formatting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Form validation on submit
+document.getElementById('transcriptForm').addEventListener('submit', function(e) {
+    const text = document.getElementById('transcript_text').value.trim();
+    const file = document.getElementById('transcript_file').files.length;
+    const btn = document.getElementById('processBtn');
+    
+    if (!text && !file) {
+        e.preventDefault();
+        alert('Please paste text or upload a file to continue.');
+        return false;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+});
+</script>
+{% endblock %}

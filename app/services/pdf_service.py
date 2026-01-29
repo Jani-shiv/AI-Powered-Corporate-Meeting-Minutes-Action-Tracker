@@ -5,39 +5,27 @@ Creates professional meeting minutes PDFs using ReportLab.
 
 import os
 from datetime import datetime
-
+from flask import current_app
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+
+# ... imports ...
 
 
 def create_meeting_minutes_pdf(meeting, output_path=None):
-    """
-    Generate a professional PDF document for meeting minutes.
-
-    Args:
-        meeting: Meeting model instance containing all meeting data
-        output_path: Optional custom output path for the PDF file
-
-    Returns:
-        str: File path of the generated PDF
-    """
-
-    # Set up the PDF file path
+    # ...
     if not output_path:
-        # Create a safe filename from meeting title and date
         safe_title = "".join(
             c for c in meeting.title if c.isalnum() or c in (" ", "-", "_")
         ).rstrip()
         date_str = meeting.date_created.strftime("%Y%m%d_%H%M")
         filename = f"meeting_minutes_{safe_title}_{date_str}.pdf".replace(" ", "_")
-        output_path = os.path.join("static", "downloads", filename)
+        # Use absolute path from current_app config or static folder
+        output_path = os.path.join(
+            current_app.root_path, "static", "downloads", filename
+        )
 
-    # Ensure downloads directory exists
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    # ...
 
     # Create the PDF document
     doc = SimpleDocTemplate(
@@ -88,6 +76,11 @@ def create_meeting_minutes_pdf(meeting, output_path=None):
         ["Meeting Title:", meeting.title],
         ["Date & Time:", meeting.date_created.strftime("%B %d, %Y at %I:%M %p")],
         ["Generated:", datetime.now().strftime("%B %d, %Y at %I:%M %p")],
+        [
+            "Sentiment:",
+            getattr(meeting, "sentiment", "N/A"),
+        ],  # Handle potential missing attr
+        ["Key Topics:", ", ".join(meeting.get_keywords()[:5])],  # Limit to 5 keywords
     ]
 
     meeting_table = Table(meeting_info, colWidths=[2 * inch, 4 * inch])

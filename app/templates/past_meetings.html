@@ -28,7 +28,7 @@
                 </span>
             </div>
             <div>
-                <a href="{{ url_for('upload_page') }}" class="btn btn-primary">
+                <a href="{{ url_for('main.upload_page') }}" class="btn btn-primary">
                     <i class="bi bi-plus-circle me-2"></i>Process New Meeting
                 </a>
             </div>
@@ -82,10 +82,10 @@
                                 <!-- Actions -->
                                 <div class="col-md-4 text-end">
                                     <div class="d-flex flex-column gap-2">
-                                        <a href="{{ url_for('view_results', meeting_id=meeting.id) }}" class="btn btn-outline-primary btn-sm">
+                                        <a href="{{ url_for('main.view_results', meeting_id=meeting.id) }}" class="btn btn-outline-primary btn-sm">
                                             <i class="bi bi-eye me-1"></i>View Details
                                         </a>
-                                        <a href="{{ url_for('export_pdf', meeting_id=meeting.id) }}" class="btn btn-outline-danger btn-sm">
+                                        <a href="{{ url_for('main.export_pdf', meeting_id=meeting.id) }}" class="btn btn-outline-danger btn-sm">
                                             <i class="bi bi-file-earmark-pdf me-1"></i>Export PDF
                                         </a>
                                         
@@ -124,7 +124,7 @@
                     You haven't processed any meeting transcripts yet.<br>
                     Start by uploading your first meeting transcript to see it here.
                 </p>
-                <a href="{{ url_for('upload_page') }}" class="btn btn-primary btn-lg">
+                <a href="{{ url_for('main.upload_page') }}" class="btn btn-primary btn-lg">
                     <i class="bi bi-plus-circle me-2"></i>Process Your First Meeting
                 </a>
             </div>
@@ -142,7 +142,7 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-4 text-center">
-                            <a href="{{ url_for('upload_page') }}" class="text-decoration-none">
+                            <a href="{{ url_for('main.upload_page') }}" class="text-decoration-none">
                                 <i class="bi bi-plus-circle text-primary" style="font-size: 2.5rem;"></i>
                                 <div class="mt-2">
                                     <strong class="text-primary">New Meeting</strong>
@@ -208,40 +208,9 @@
 
 {% block scripts %}
 <script>
-function confirmDelete(meetingId, meetingTitle) {
-    // Set the meeting title in the modal
-    document.getElementById('meetingTitle').textContent = meetingTitle;
-    
-    // Set the form action URL
-    const form = document.getElementById('deleteForm');
-    form.action = `/delete_meeting/${meetingId}`;
-    
-    // Show the modal
-    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-    modal.show();
-}
-
+// Export all meetings feature (placeholder)
 function exportAllMeetings() {
-    // This would be implemented to export all meetings as a single PDF or ZIP file
-    alert('Export all meetings functionality would be implemented here.\n\nFor now, you can export individual meetings using the "Export PDF" button for each meeting.');
+    alert('Bulk export feature coming soon!\n\nFor now, export individual meetings using the PDF button.');
 }
-
-// Add hover effects to meeting cards
-document.addEventListener('DOMContentLoaded', function() {
-    const meetingCards = document.querySelectorAll('.meeting-card');
-    
-    meetingCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.transition = 'transform 0.2s ease-in-out';
-            this.classList.add('shadow');
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-            this.classList.remove('shadow');
-        });
-    });
-});
 </script>
 {% endblock %}
